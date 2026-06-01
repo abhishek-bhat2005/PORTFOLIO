@@ -903,6 +903,14 @@
 </footer>
 
 <script>
+  // Use a real file for the hero image (more reliable on mobile than very large base64 data)
+  const heroImg = document.getElementById('hero-img');
+  if (heroImg) {
+    heroImg.src = 'profile.png';
+    heroImg.loading = 'eager';
+    heroImg.decoding = 'async';
+  }
+
   // ── Cursor ──
   const dot = document.getElementById('cursor-dot');
   const ring = document.getElementById('cursor-ring');
