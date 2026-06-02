@@ -538,6 +538,37 @@
   .avail-value { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--cream); }
   .avail-divider { height: 1px; background: var(--border); margin: 4px 0; }
 
+  .contact-form { margin-top: 48px; display: flex; flex-direction: column; gap: 16px; }
+  .form-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--cream); margin-bottom: 4px; }
+  .contact-form input, .contact-form textarea {
+    width: 100%;
+    background: rgba(10,14,26,0.5);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    color: var(--cream);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .contact-form input::placeholder, .contact-form textarea::placeholder { color: var(--text-muted); }
+  .contact-form input:focus, .contact-form textarea:focus { border-color: var(--gold); background: var(--navy); }
+  .contact-form button {
+    cursor: none;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 16px 32px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: background 0.3s, color 0.3s;
+    margin-top: 8px;
+    align-self: flex-start;
+  }
+  .contact-form button:hover { background: var(--gold); color: var(--navy); }
+
   .resume-fab-wrap {
     margin-top: 56px;
     display: flex;
@@ -619,7 +650,7 @@
 
 <!-- Nav -->
 <nav>
-  <a href="#hero" class="nav-logo">A S B</a>
+  <a href="#hero" class="nav-logo"></a>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#experience">Experience</a></li>
@@ -881,6 +912,14 @@
           <div class="avail-value">AI · Full-Stack · Automation · API</div>
         </div>
       </div>
+
+    <form id="contactForm" class="contact-form">
+      <div class="form-title">Send a Message</div>
+      <input type="text" id="name" name="name" placeholder="Your Name" required>
+      <input type="email" id="email" name="email" placeholder="Your Email" required>
+      <textarea id="message" name="message" placeholder="Your Message" rows="4" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
     </div>
   </div>
   <div class="resume-fab-wrap fade-up">
@@ -998,6 +1037,41 @@
   });
 
   recalcCarousel();
+
+  // ── Contact Form Submission ──
+  const contactForm = document.getElementById('contactForm');
+  if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Sending...';
+      submitBtn.disabled = true;
+
+      const formData = new FormData(contactForm);
+      
+      try {
+        const response = await fetch('https://formspree.io/f/maqkrzep', {
+          method: 'POST',
+          body: formData,
+          headers: { 'Accept': 'application/json' }
+        });
+        
+        if (response.ok) {
+          alert('Thank you! Your message has been sent.');
+          contactForm.reset();
+        } else {
+          alert('Oops! There was a problem sending your message.');
+        }
+      } catch (error) {
+        alert('Oops! There was a network error.');
+      } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+  }
 </script>
 </body>
 </html>
